@@ -1,0 +1,4 @@
+rootProject.name = 'paperround'
+include 'common'
+//include 'schedule'
+include "console"

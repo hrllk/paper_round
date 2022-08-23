@@ -1,0 +1,36 @@
+/*
+plugins {
+	id 'org.springframework.boot' version '2.7.3'
+	id 'io.spring.dependency-management' version '1.0.13.RELEASE'
+	id 'java'
+}
+
+group = 'com.example'
+version = '0.0.1-SNAPSHOT'
+sourceCompatibility = '8'
+
+repositories {
+	mavenCentral()
+}
+
+dependencies {
+	implementation 'org.springframework.boot:spring-boot-starter'
+	testImplementation 'org.springframework.boot:spring-boot-starter-test'
+}
+
+tasks.named('test') {
+	useJUnitPlatform()
+}
+*/
+bootJar { enabled = true }
+jar { enabled = true }
+
+dependencies {
+
+    /***
+     * common
+     */
+    implementation project(path: ':common', configuration: 'default')
+    implementation 'org.springframework.boot:spring-boot-starter-web:2.7.2'
+
+}
