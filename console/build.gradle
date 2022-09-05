@@ -31,6 +31,30 @@ dependencies {
      * common
      */
     implementation project(path: ':common', configuration: 'default')
-    implementation 'org.springframework.boot:spring-boot-starter-web:2.7.2'
+//    implementation 'org.springframework.boot:spring-boot-starter-web:2.7.2'
+
+//    implementation 'org.springframework.boot:spring-boot-starter-web'
+    // log4j 의존성문제로 web에서 기본적으로 사용되는 logging 모듈을 exclude시켜야한다.
+    implementation 'org.springframework.boot:spring-boot-starter-web'
+
+    implementation 'org.springframework.boot:spring-boot-starter-security'
+//    implementation 'org.thymeleaf.extras:thymeleaf-extras-springsecurity5'
+
+//    implementation 'org.projectlombok:lombok:1.18.24'
+//    annotationProcessor 'org.projectlombok:lombok:1.18.24'
+//    testImplementation 'org.projectlombok:lombok:1.18.24'
+    /***
+     * Test
+     */
+    testImplementation 'org.springframework.boot:spring-boot-starter-test'
+
+
+    /***
+     * Logging
+     */
+    implementation 'ch.qos.logback:logback-core:1.2.6'
+    implementation 'org.slf4j:slf4j-api:1.7.30'
+    testImplementation 'ch.qos.logback:logback-classic:1.2.6'
+
 
 }
