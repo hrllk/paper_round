@@ -35,3 +35,8 @@ out/
 
 ### VS Code ###
 .vscode/
+
+
+
+### Packages
+/node_modules/**
