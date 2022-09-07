@@ -4,8 +4,8 @@
       <v-row no-gutters>
         <v-col cols="7" class="main-part d-none d-md-none d-lg-flex">
           <div class="d-flex">
-            <v-img src="@/assets/logo.svg" contain></v-img>
-            <p>Vue Material Admin</p>
+            <v-img src="@/assets/logo2.svg" contain></v-img>
+            <p>Paper Route</p>
           </div>
         </v-col>
         <v-col cols="12" lg="5" class="login-part d-flex align-center justify-center">
@@ -26,7 +26,7 @@
                       <v-container>
                         <v-row class="flex-column">
                           <v-col>
-                            <p class="login-slogan display-2 text-center font-weight-medium my-10">Good Morning, User</p>
+                            <p class="login-slogan display-2 text-center font-weight-medium my-10">HI, :D</p>
                             <v-btn height="45" block color="white" elevation="0" class="google text-capitalize">
                               <v-img src="@/assets/google.svg" max-width="30" class="mr-4"></v-img>
                               Sign in with Google</v-btn>
@@ -41,7 +41,6 @@
                               <v-text-field
                                   v-model="email"
                                   :rules="emailRules"
-                                  value="admin@flatlogic.com"
                                   label="Email Address"
                                   required
                               ></v-text-field>
@@ -78,7 +77,7 @@
                         <v-row class="flex-column">
 
                           <v-col>
-                            <p class="login-slogan display-2 text-center font-weight-medium mt-10">Welcome!</p>
+                            <p class="login-slogan display-2 text-center font-weight-medium mt-10">Welcome</p>
                             <p class="login-slogan display-1 text-center font-weight-medium mb-10">Create your account</p>
                           </v-col>
 
@@ -109,7 +108,7 @@
                                   large
                                   block
                                   :disabled="createFullName.length === 0 || createEmail.length === 0 || createPassword === 0"
-                                  color="primary"
+                                  color="text-grey"
                                   @click="login"
                               >
                                 Create your account</v-btn>
@@ -135,7 +134,7 @@
             </v-col>
             <v-col cols="12" class="d-flex justify-center">
               <v-footer>
-                <div class="primary--text">© 2014-2020 <a href="https://flatlogic.com/" class="text-decoration-none">Flatlogic</a>, LLC. All rights reserved.</div>
+<!--                <div class="primary&#45;&#45;text">© 2014-2020 <a href="https://flatlogic.com/" class="text-decoration-none">Flatlogic</a>, LLC. All rights reserved.</div>-->
               </v-footer>
             </v-col>
           </v-row>
@@ -151,15 +150,15 @@
     name: 'Login',
     data() {
       return {
-        email: 'admin@flatlogic.com',
+        email: '',
         emailRules: [
           v => !!v || 'E-mail is required',
           v => /.+@.+/.test(v) || 'E-mail must be valid',
         ],
-        createFullName: 'John Smith',
-        createEmail: 'john@flatlogic.com',
-        createPassword: '123456',
-        password: '123456',
+        createFullName: '',
+        createEmail: '',
+        createPassword: '',
+        password: '',
         passRules: [
           v => !!v || 'Password is required',
           v => v.length >= 6 || 'Min 6 characters'
@@ -168,6 +167,7 @@
     },
     methods: {
       login(){
+
         window.localStorage.setItem('authenticated', true);
         this.$router.push('/dashboard');
       }
