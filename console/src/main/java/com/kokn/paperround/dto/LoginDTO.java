@@ -1,4 +1,4 @@
-package com.kokn.paperround.console.dto;
+package com.kokn.paperround.dto;
 
 import lombok.Data;
 import org.springframework.security.core.GrantedAuthority;

@@ -1,4 +1,4 @@
-package com.kokn.paperround.console.login;
+package com.kokn.paperround.login;
 
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
