@@ -38,6 +38,7 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-web'
 
     implementation 'org.springframework.boot:spring-boot-starter-security'
+//    implementation 'junit:junit:4.13.1'
 //    implementation 'org.thymeleaf.extras:thymeleaf-extras-springsecurity5'
 
 //    implementation 'org.projectlombok:lombok:1.18.24'
@@ -46,7 +47,11 @@ dependencies {
     /***
      * Test
      */
-    testImplementation 'org.springframework.boot:spring-boot-starter-test'
+    implementation 'org.springframework.boot:spring-boot-starter-test'
+//    testImplementation('org.springframework.boot:spring-boot-starter-test') {
+//        exclude group: 'junit', module: 'junit'
+//    }
+//    testImplementation 'org.junit.jupiter:junit-jupiter-engine'
 
 
     /***
