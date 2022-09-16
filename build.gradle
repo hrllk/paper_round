@@ -1,60 +1,3 @@
-/*
-buildscript {
-    ext {
-        springBootVersion = '2.7.2'
-    }
-    repositories {
-        mavenCentral()
-    }
-    dependencies {
-        classpath "org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}"
-        classpath "io.spring.gradle:dependency-management-plugin:1.0.11.RELEASE"
-    }
-
-}
-subprojects {
-    apply plugin: 'java'
-//		apply plugin: 'idea'
-    apply plugin: 'org.springframework.boot'
-    apply plugin: 'io.spring.dependency-management'
-
-    group 'com.kokn'
-    version '1.0-SNAPSHOT'
-
-
-    sourceCompatibility = '1.8'
-    targetCompatibility = '1.8'
-    compileJava.options.encoding = 'UTF-8'
-
-    repositories {
-        mavenCentral()
-    }
-
-    */
-/***
-     * common dependencies
-     *//*
-
-    dependencies {
-        compileOnly 'org.projectlombok:lombok:1.18.24'
-        annotationProcessor 'org.projectlombok:lombok:1.18.24'
-        annotationProcessor "org.springframework.boot:spring-boot-configuration-processor"
-
-        */
-/***
-         * test case
-         *//*
-
-        testImplementation 'org.junit.jupiter:junit-jupiter-api:5.7.0'
-        testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.7.0'
-    }
-
-    test {
-        useJUnitPlatform()
-    }
-
-
-}*/
 
 /***
  * parents
@@ -81,43 +24,21 @@ subprojects {
     }
 
     dependencies {
-//        implementation 'com.fasterxml.jackson.core:jackson-databind:2.9.7'
 
-//        testImplementation 'org.junit.jupiter:junit-jupiter-api'
-//        testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine'
+        // TODO : 공통으로 사용되는 의존성들을 common모듈로 몰아넣고싶었지만 제대로 작동하지않아.
+        // 임시적으로 이곳에
+        /***
+         * TODO : 공통으로 사용되는 의존성들을 common모듈로 몰아넣고싶었지만 제대로 작동하지않아.
+         * 임시적으로 이곳에 몰아넣는다.. BestPractice가 아닌것같지만.. 찾아봐야함.
+         */
+        implementation('org.projectlombok:lombok:1.18.24')
+        testImplementation('org.projectlombok:lombok:1.18.24')
+        annotationProcessor('org.projectlombok:lombok:1.18.24')
+        testAnnotationProcessor('org.projectlombok:lombok:1.18.24')
+
     }
 
     test {
         useJUnitPlatform()
     }
 }
-
-/***
- * subprojects:
- * parents.build-gradle 을 제외한 sub.build-gradle 을 제어하기위함.
- */
-//subprojects{
-//    group = 'com.kokn'
-//    version = '0.0.1-SANAPSHOT'
-//
-//    apply plugin: 'java'
-//    apply plugin: 'io.spring.dependency-management'
-//    apply plugin: 'java-library'
-//
-//    repositories {
-//        mavenCentral()
-//    }
-//
-//    dependencyManagement {
-//        imports {
-//            mavenBom("org.springframework.boot:spring-boot-dependencies:2.1.7.RELEASE")
-//        }
-//    }
-//}
-
-
-//dependencies {
-//    implementation 'org.springframework.boot:spring-boot-starter'
-//    testImplementation 'org.springframework.boot:spring-boot-starter-test'
-//    implementation project(':common')
-//}
