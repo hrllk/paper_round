@@ -1,12 +1,69 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <configuration>
-    <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
-        <encoder>
-            <pattern>%d{HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n</pattern>
-        </encoder>
-    </appender>
-    <root level="debug">
-        <appender-ref ref="STDOUT"/>
-    </root>
-</configuration>
+<!--    <include resource="logback/default.xml"/>-->
 
+    <conversionRule conversionWord="clr" converterClass="org.springframework.boot.logging.logback.ColorConverter"/>
+    <conversionRule conversionWord="wex" converterClass="org.springframework.boot.logging.logback.WhitespaceThrowableProxyConverter"/>
+    <conversionRule conversionWord="wEx" converterClass="org.springframework.boot.logging.logback.ExtendedWhitespaceThrowableProxyConverter"/>
+
+    <!-- 변수정보 -->
+    <property name="LOG_LEVEL_PATTERN" value="[%-5p]"/>
+    <property name="LOG_DATEFORMAT_PATTERN" value="yyyy-MM-dd HH:mm:ss.SSS"/>
+    <property name="CONSOLE_LOG_PATTERN" value="%clr(${LOG_LEVEL_PATTERN}) %clr(%d{${LOG_DATEFORMAT_PATTERN}}){faint} %clr([%25.25t]){magenta} %clr(---){faint} %clr(%-40.40logger{39}){cyan} %clr(:){faint} %m%n${LOG_EXCEPTION_CONVERSION_WORD:-%wEx}"/>
+    <property name="CONSOLE_LOG_CHARSET" value="UTF-8"/>
+    <property name="FILE_LOG_PATTERN" value="${LOG_LEVEL_PATTERN} %d{${LOG_DATEFORMAT_PATTERN}} [%25.25t] --- %-40.40logger{39} : %msg%n"/>
+    <property name="FILE_LOG_CHARSET" value="UTF-8"/>
+
+    <springProfile name="local">
+        <appender name="console-appender" class="ch.qos.logback.core.ConsoleAppender">
+            <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
+                <pattern>${CONSOLE_LOG_PATTERN}</pattern>
+                <charset>${CONSOLE_LOG_CHARSET}</charset>
+            </encoder>
+        </appender>
+        <root level="DEBUG">
+            <appender-ref ref="console-appender"/>
+        </root>
+        <logger name="com.kokn.paperround" level="DEBUG"/>
+    </springProfile>
+
+<!--    <springProfile name="dev, prod">-->
+<!--        <appender name="FILE-ROLLING" class="ch.qos.logback.core.rolling.RollingFileAppender">-->
+<!--            <file>${logs.file.path}/${logs.file.name}.log</file>-->
+<!--            <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">-->
+<!--                <fileNamePattern>${logs.file.path}/${logs.file.name}.%d{yyyy-MM-dd}.%i.log</fileNamePattern>-->
+<!--                <maxFileSize>1GB</maxFileSize>-->
+<!--                <totalSizeCap>5GB</totalSizeCap>-->
+<!--                <maxHistory>10</maxHistory>-->
+<!--            </rollingPolicy>-->
+<!--            <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">-->
+<!--                <pattern>${FILE_LOG_PATTERN}</pattern>-->
+<!--                <charset>${FILE_LOG_CHARSET}</charset>-->
+<!--            </encoder>-->
+<!--        </appender>-->
+
+<!--        <appender name="ERROR-FILE-ROLLING" class="ch.qos.logback.core.rolling.RollingFileAppender">-->
+<!--            <filter class="ch.qos.logback.classic.filter.ThresholdFilter">-->
+<!--                <level>warn</level>-->
+<!--            </filter>-->
+<!--            <file>${logs.file.path}/${logs.file.name}-error.log</file>-->
+<!--            <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">-->
+<!--                <fileNamePattern>${logs.file.path}/${logs.file.name}-error.%d{yyyy-MM-dd}.%i.log</fileNamePattern>-->
+<!--                <maxFileSize>1GB</maxFileSize>-->
+<!--                <totalSizeCap>5GB</totalSizeCap>-->
+<!--                <maxHistory>365</maxHistory>-->
+<!--            </rollingPolicy>-->
+
+<!--            <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">-->
+<!--                <pattern>${FILE_LOG_PATTERN}</pattern>-->
+<!--                <charset>${FILE_LOG_CHARSET}</charset>-->
+<!--            </encoder>-->
+<!--        </appender>-->
+
+<!--        <logger name="com.infinigru.police" level="INFO"/>-->
+<!--        <root level="INFO">-->
+<!--            <appender-ref ref="FILE-ROLLING"/>-->
+<!--            <appender-ref ref="ERROR-FILE-ROLLING"/>-->
+<!--        </root>-->
+<!--    </springProfile>-->
+</configuration>
