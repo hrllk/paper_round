@@ -60,7 +60,6 @@
                                   large
                                   :disabled="password.length === 0 || email.length === 0"
                                   color="primary"
-                                  @click="login"
                               >
                                 Login</v-btn>
                               <v-btn large text class="text-capitalize primary--text">Forget Password</v-btn>
@@ -72,6 +71,7 @@
                   </v-tab-item>
 
                   <v-tab-item :value="'tab-newUser'" >
+<!--                    <v-form v-on:submit.prevent="submitSignup">-->
                     <v-form>
                       <v-container>
                         <v-row class="flex-column">
@@ -84,18 +84,18 @@
                           <v-form>
                             <v-col>
                               <v-text-field
-                                  v-model="createFullName"
+                                  v-model="signupForm.name"
                                   label="Full Name"
                                   required
                               ></v-text-field>
                               <v-text-field
-                                  v-model="createEmail"
+                                  v-model="signupForm.email"
                                   :rules="emailRules"
                                   label="Email Address"
                                   required
                               ></v-text-field>
                               <v-text-field
-                                  v-model="createPassword"
+                                  v-model="signupForm.password"
                                   :rules="passRules"
                                   type="password"
                                   label="Password"
@@ -107,9 +107,9 @@
                               <v-btn
                                   large
                                   block
-                                  :disabled="createFullName.length === 0 || createEmail.length === 0 || createPassword === 0"
+                                  :disabled="signupForm.name.length === 0 || signupForm.email.length === 0 || signupForm.password === 0"
                                   color="text-grey"
-                                  @click="login"
+                                  @click="signup"
                               >
                                 Create your account</v-btn>
                             </v-col>
@@ -146,6 +146,7 @@
 
 <script>
 
+import axios from 'axios';
   export default {
     name: 'Login',
     data() {
@@ -155,29 +156,59 @@
           v => !!v || 'E-mail is required',
           v => /.+@.+/.test(v) || 'E-mail must be valid',
         ],
-        createFullName: '',
-        createEmail: '',
-        createPassword: '',
+        // createFullName: '',
+        // createEmail: '',
+        // createPassword: '',
         password: '',
         passRules: [
           v => !!v || 'Password is required',
           v => v.length >= 6 || 'Min 6 characters'
-        ]
+        ],
+
+        signupForm: {
+          name: '',
+          email: '',
+          password: '',
+        }
+
       }
     },
     methods: {
-      login(){
+      submitSignup() {
+        // axios.post(`/auth/signup`,this.signupForm, {
+        // }).then(res => console.log("res: ", res));
 
-        window.localStorage.setItem('authenticated', true);
-        this.$router.push('/dashboard');
-      }
-    },
-    created() {
-      if (window.localStorage.getItem('authenticated') === 'true') {
-        this.$router.push('/dashboard');
+        console.log("submitSIgnup!!!");
+          console.log("signup params: ", this.signupForm);
+
+      },
+      signup() {
+        console.log("signup.");
+        console.log("signup params: ", this.signupForm);
+        // this.$axios.post(`/auth/signup`, this.signup, {
+        console.log("signupForm.serialize: ", this.signupForm.serialize)
+        let frm = new FormData;
+        // formData = this.signupForm;
+        frm.append('name', this.signupForm.name);
+        frm.append('email', this.signupForm.email);
+        frm.append('password', this.signupForm.password);
+        console.log("formData: ", frm);
+
+        axios.post(`/auth/signup`,frm, {
+        }).then(res => console.log("res: ", res));
+
       }
     }
   }
+
+
+    // created() {
+    //   if (window.localStorage.getItem('authenticated') === 'true') {
+    //     console.log("hi login!!")
+    //     this.$router.push('/dashboard');
+    //   }
+    // }
+
 
 </script>
 

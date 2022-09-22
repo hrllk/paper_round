@@ -1,6 +1,7 @@
 import Vue from 'vue';
-import Router from 'vue-router';
+import VueRouter from 'vue-router';
 
+import VueCookies from 'vue-cookies';
 // import Layout from '@/components/Layout/Layout';
 
 // Pages
@@ -12,18 +13,46 @@ import Router from 'vue-router';
 // import Charts from '@/pages/Charts/Charts'
 // import Maps from '@/pages/Maps/Google'
 // import Error from "@/pages/Error/Error";
-import Login from "@/pages/Login/Login";
+// import Login from "@/pages/Login/Login";
 
-Vue.use(Router);
+Vue.use(VueRouter);
 
-export default new Router({
+
+const routes = [
+  {
+    path: '/login',
+    name: 'Login',
+    component: () => import('./pages/Login/Login')
+  }
+]
+
+const router = new VueRouter({
   mode: 'history',
-  routes: [
-    {
-      path: '/login',
-      name: 'Login',
-      component: Login
-    },
+  base: process.env.BASE_URL,
+  routes
+})
+
+router.beforeEach(async (to, from, next) => {
+
+  // console.log("VueCookies: ", VueCookies);
+  console.log("to: ", to);
+  console.log("from: ", from);
+  console.log("next: ", next);
+  // console.log("store : ", store);
+  console.log('accessToken : ', VueCookies.get('accessToken'))
+  // console.log('refreshToken: ', VueCookies.get('refreshToken'))
+
+  next();
+})
+export default router;
+// export default new Router({
+//   mode: 'history',
+//   routes: [
+//     {
+//       path: '/login',
+//       name: 'Login',
+//       component: Login
+//     },
   //   {
   //   path: '/',
   //   redirect: 'login',
@@ -72,5 +101,6 @@ export default new Router({
   //     name: 'Error',
   //     component: Error
   //   }
-  ],
-});
+  // ],
+// });
+

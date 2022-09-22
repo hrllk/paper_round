@@ -1,51 +1,93 @@
 package com.kokn.paperround.config;
 
+import com.kokn.paperround.config.filter.JwtExceptionFilter;
+import com.kokn.paperround.config.filter.JwtFilter;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
-import org.springframework.security.config.annotation.web.configuration.WebSecurityCustomizer;
-import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.security.config.http.SessionCreationPolicy;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.CorsConfigurationSource;
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
-@EnableWebSecurity
 @Configuration
+@EnableWebSecurity
 @RequiredArgsConstructor
-public class SecurityConfigure {
+@Slf4j
+public class SecurityConfigure extends WebSecurityConfigurerAdapter {
 
-//    private final UserService userService;
-//    private final LoginService loginService;
-//    @Autowired
-//    private LoginService loginService;
+    private final JwtExceptionFilter jwtExceptionFilter;
+    private final JwtFilter jwtFilter;
 
+    @Override
+    protected void configure(HttpSecurity http) throws Exception {
+        log.debug("***************************************************************");
+        log.debug("* CONFIGURATION - Security Config");
 
-    @Bean
-    public SecurityFilterChain filterChain(HttpSecurity http) throws Exception{
-        System.out.println("!!! filterChain !!!");
+        /***
+         * Filter
+         */
+        http.addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);
+        http.addFilterBefore(jwtExceptionFilter, JwtFilter.class);
+
 
         http
-                .httpBasic() // 특정 resource에 대해 접근시에 브라우저가 사용자에게 username과 password를 확인해 인가를 제한하는 방법 // 매우 심플
+                /***
+                 * Cors Configuration
+                 */
+                .cors().configurationSource(corsConfigurationSource())
 
-            .and()
+                /***
+                 * Cross site Request forgery
+                 */
+                .and()
+                .csrf().disable()
+
+                /***
+                 * disable Session
+                 * spring security use session basically not use token
+                 * so if use token, have to disable session
+                 */
+                .sessionManagement()
+                .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+
+
+//                .and()
+//                .authorizeRequests()
+//                .antMatchers("/auth/**").permitAll();
+                .and()
                 .authorizeRequests()
-                .anyRequest().permitAll()
-            .and()
-                .formLogin()
-                .loginProcessingUrl("/login-proc");
+                .antMatchers("/api/**").authenticated(); // 회원가입, 로그인에대해서는 인증을 요하지않는다.
 
-        return http.build();
+//                .and()
+//                .logout()
+//                .logoutSuccessUrl("/login");
 
     }
 
-
+    /***
+     * Cors Configuration Only For develop
+     * @return
+     */
     @Bean
-    public WebSecurityCustomizer webSecurityCustomizer() {
-        return (web -> web.ignoring().antMatchers("/assets/**", "h2-console/**", "/api/hello2"));
+    public CorsConfigurationSource corsConfigurationSource() {
+        log.debug("** Cors Configuration **");
+        CorsConfiguration configuration = new CorsConfiguration();
+
+        configuration.addAllowedOrigin("*");
+        configuration.addAllowedMethod("*");
+//        configuration.addAllowedHeader("*");
+//        configuration.setAllowCredentials(true);
+
+        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+        source.registerCorsConfiguration("/**", configuration);
+        return source;
     }
 
 
-//    @Bean
-//    public void configure(AuthenticationManagerBuilder auth) throws Exception {
-//        auth.userDetailsService(loginService).passwordEncoder(new BCryptPasswordEncoder());
-//    }
 }

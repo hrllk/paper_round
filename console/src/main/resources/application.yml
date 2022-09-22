@@ -30,6 +30,10 @@ spring:
     hibernate:
       ddl-auto: update
 
+server:
+  port: 8100
+  shutdown: graceful
+
 #    properties:
 #      hibernate:
 #        format_sql: true
