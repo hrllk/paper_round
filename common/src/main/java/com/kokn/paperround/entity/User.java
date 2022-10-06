@@ -25,5 +25,7 @@ public class User implements Serializable {
     @Column
     private String password;
 
+    @Column
+    private byte isConfirm;
 
 }

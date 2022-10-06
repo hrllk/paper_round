@@ -18,6 +18,26 @@ spring:
 ---
 
 spring:
+  # TODO : should encapsulation!!
+  mail:
+    default-encoding: UTF-8
+    host: smtp.gmail.com
+    username: paperrounder@gmail.com
+    password: uuzgetavtnotoatc
+    port : 587
+    properties:
+      mail:
+        smtp:
+          auth: true
+#          connectiontimeout: 5000
+#          timeout: 5000
+#          writetimeout: 5000
+
+          starttls:
+            enable: true
+    protocol: smtp
+    test-connection: false
+
   config:
     activate:
       on-profile: "common"

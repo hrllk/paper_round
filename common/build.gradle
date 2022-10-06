@@ -6,6 +6,14 @@ dependencies {
      * spring package
      */
     implementation 'org.springframework.boot:spring-boot-starter'
+    implementation 'org.springframework.boot:spring-boot-starter-mail'
+
+    /***
+     * mail template
+     */
+    implementation 'org.thymeleaf:thymeleaf-spring5'
+    implementation 'nz.net.ultraq.thymeleaf:thymeleaf-layout-dialect'
+
 
     /***
      * Persistence

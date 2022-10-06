@@ -23,7 +23,12 @@ const routes = [
     path: '/login',
     name: 'Login',
     component: () => import('./pages/Login/Login')
-  }
+  }/*, {
+    path: '/confirmation',
+    name: 'Confirmation',
+    component: () => import('./pages/Confirmation')
+  }*/
+
 ]
 
 const router = new VueRouter({
