@@ -24,7 +24,7 @@ public class ConfirmationService {
     private final UserRepository userRepository;
 
 
-    public void confirmation(Long confirmId){
+    public int confirmation(Long confirmId){
 
 
         /***
@@ -37,7 +37,7 @@ public class ConfirmationService {
          */
         long expiredTime = LocalDateTime.now().atZone(ZoneId.systemDefault()).toInstant().toEpochMilli();
         if (expiredTime < new Date().getTime()) {
-            throw new RuntimeException("Expired Confirmation Token");
+            return 2;
         }
 
         /***
@@ -45,5 +45,6 @@ public class ConfirmationService {
          */
         User user = userRepository.findByEmail(token.getUserId());
         user.setIsConfirm((byte) 1);
+        return 1;
     }
 }

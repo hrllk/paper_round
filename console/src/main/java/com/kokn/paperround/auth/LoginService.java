@@ -25,8 +25,8 @@ import java.util.Optional;
 @Transactional
 public class LoginService implements UserDetailsService {
 
-//    private final static String CONFIRM_PATH = "/api/v1/confirmation?id=";
-    private final static String CONFIRM_PATH = "/confirmation?id=";
+    private final static String CONFIRM_URL = "/api/v1/confirmation?id=";
+//    private final static String CONFIRM_PATH = "/confirmation?id=";
     private final UserRepository userRepository;
     private final ConfirmationTokenRepository confirmationTokenRepository;
     private final EmailSender emailSender;
@@ -49,7 +49,7 @@ public class LoginService implements UserDetailsService {
          */
         ConfirmationToken token = ConfirmationToken.createEmailConfirmationToken(dto.getEmail());
         confirmationTokenRepository.save(token);
-        emailSender.sendSubscriptionMail(Constants.SIGNUP_CONFIRM_URL + CONFIRM_PATH + token.getConfirmationTokenId(), dto.getEmail());
+        emailSender.sendSubscriptionMail(Constants.SIGNUP_CONFIRM_URL + CONFIRM_URL + token.getConfirmationTokenId(), dto.getEmail());
 
     }
 
