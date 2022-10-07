@@ -28,7 +28,7 @@ public class LoginController {
     @PostMapping("/signin")
     public ResponseEntity signin(@ModelAttribute SignInDto dto) {
 
+        return ResponseEntity.ok(loginService.signin(dto));
 
-        return null;
     }
 }

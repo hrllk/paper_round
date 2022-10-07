@@ -1,6 +1,7 @@
 package com.kokn.paperround.component;
 
 import com.kokn.paperround.auth.UserPrincipalDetails;
+import com.kokn.paperround.dto.TokenDto;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
@@ -16,6 +17,7 @@ import org.springframework.stereotype.Component;
 import java.security.Key;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Date;
 import java.util.stream.Collectors;
 
 @Component
@@ -24,6 +26,9 @@ public class TokenProvider {
     public static final String JWT_SECRET_KEY = "c3ByaW5nLWJvb3Qtc2VjdXJpdHktand0LXR1dG9yaWFsLWppd29vbi1zcHJpbmctYm9vdC1zZWN1cml0eS1qd3QtdHV0b3JpYWwK";
     private static final String AUTHORITIES_KEY = "auth";
     private final Key key;
+
+    private static final long ACCESS_TOKEN_EXPIRE_TIME = 1000 * 60 * 30;
+    private static final String BEARER_TYPE = "bearer";
 
     /***
      * init
@@ -43,6 +48,31 @@ public class TokenProvider {
             log.error("Invalid Token Cause: [{}]", e);
         }
         return false;
+    }
+
+    public TokenDto generateTokenDto(Authentication authentication){
+        log.debug("func: generateTokenDto() !");
+        String authorities = authentication.getAuthorities().stream()
+                .map(GrantedAuthority::getAuthority)
+                .collect(Collectors.joining(","));
+        long now = new Date().getTime();
+
+        /**
+         * Generate Token
+         */
+        Date accessTokenExpiresIn = new Date(now + ACCESS_TOKEN_EXPIRE_TIME);
+        String accessToken = Jwts.builder()
+                .setSubject(authentication.getName())       // id를지정하고,
+                .claim(AUTHORITIES_KEY, authorities)        // key는 사용자가 가지고있는 권한을 사용하며,
+                .setExpiration(accessTokenExpiresIn)        // 만료시간을 설정하고,
+                .signWith(key, SignatureAlgorithm.HS512)    // 서명(고유)값과, 해시키를 지정하여
+                .compact();                                 // 만든다(토큰을)
+
+        return TokenDto.builder()
+                .grantType(BEARER_TYPE)
+                .accessToken(accessToken)
+                .accessTokenExpiresln(accessTokenExpiresIn.getTime())
+                .build();
     }
 
 

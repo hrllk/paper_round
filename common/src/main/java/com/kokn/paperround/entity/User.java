@@ -1,5 +1,6 @@
 package com.kokn.paperround.entity;
 
+import lombok.Getter;
 import lombok.Setter;
 
 import javax.persistence.*;
@@ -8,6 +9,7 @@ import java.io.Serializable;
 @Entity
 @Table(name="user")
 @Setter
+@Getter
 public class User implements Serializable {
 
     private static final long serialVersionUID = 1L;
@@ -27,5 +29,8 @@ public class User implements Serializable {
 
     @Column
     private byte isConfirm;
+
+    @Column
+    private String authority;
 
 }

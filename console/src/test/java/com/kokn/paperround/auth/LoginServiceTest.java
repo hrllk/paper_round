@@ -1,6 +1,8 @@
 package com.kokn.paperround.auth;
 
+import com.kokn.paperround.dto.SignInDto;
 import com.kokn.paperround.dto.SignUpDto;
+import com.kokn.paperround.dto.TokenDto;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -34,10 +36,21 @@ class LoginServiceTest {
         log.debug("hi");
         SignUpDto dto = new SignUpDto();
         dto.setEmail("roovcloudy@gmail.com");
-        dto.setName("rugurugu");
-        dto.setPassword("rugurugu");
+        dto.setPassword("tmfvmsdkdl1!");
         loginService.signup(dto);
 
+    }
+    @Test
+    @Commit
+    void signin_test() {
+
+        log.debug("hi");
+        SignInDto dto = new SignInDto();
+        dto.setEmail("roovcloudy@gmail.com");
+        dto.setPassword("tmfvmsdkdl1!");
+
+        TokenDto responseToken = loginService.signin(dto);
+        log.debug("\n\n response(generated) Token : [{}] \n\n", responseToken);
 
     }
 }
