@@ -28,6 +28,40 @@ const routes = [
     name: 'Confirmation',
     component: () => import('./pages/Confirmation')
   }*/
+  , {
+    // path: '/',
+    // // redirect: 'login',
+    // name: 'Layout',
+    // component: Layout,
+    // children: [
+    //   {
+    //     path: 'dashboard',
+    //     name: 'Dashboard',
+    //     component: Dashboard,
+    //   },
+    //
+    // ]
+    path: '/',
+    // redirect: 'login',
+    name: 'DashboardLayout',
+    // component: DashboardLayout,
+    component: () => import('./components/DashboardLayout/DashboardLayout'),
+    children: [
+      {
+        path: '/',
+        name: 'index',
+        component: () => import('./pages/Index/Index'),
+      },
+      {
+        path: '/keywords',
+        name: 'keyword',
+        component: () => import('./pages/Keyword/Keyword'),
+      },
+
+    ]
+
+  }
+
 
 ]
 
@@ -39,15 +73,29 @@ const router = new VueRouter({
 
 router.beforeEach(async (to, from, next) => {
 
-  // console.log("VueCookies: ", VueCookies);
   console.log("to: ", to);
   console.log("from: ", from);
   console.log("next: ", next);
-  // console.log("store : ", store);
   console.log('accessToken : ', VueCookies.get('accessToken'))
-  // console.log('refreshToken: ', VueCookies.get('refreshToken'))
 
-  next();
+  // if (VueCookies.get('accessToken') !== null){
+  //   console.log('have accessToken !! ')
+  //   return next();
+  // }
+  //
+  // if (to.name === 'login'){
+  //   return next();
+  // }
+  // next('/login')
+  // console.log("??");
+
+
+  let accessToken = VueCookies.get('accessToken');
+  console.log('accessToken: ', accessToken);
+
+  if (to.name !== 'Login' && accessToken === null) next({name: 'Login'})
+  else next()
+
 })
 export default router;
 // export default new Router({

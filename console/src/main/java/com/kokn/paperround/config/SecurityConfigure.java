@@ -42,12 +42,12 @@ public class SecurityConfigure extends WebSecurityConfigurerAdapter {
                 /***
                  * Cors Configuration
                  */
-                .cors().configurationSource(corsConfigurationSource())
+//                .cors().configurationSource(corsConfigurationSource())
 
                 /***
                  * Cross site Request forgery
                  */
-                .and()
+//                .and()
                 .csrf().disable()
 
                 /***
@@ -76,20 +76,20 @@ public class SecurityConfigure extends WebSecurityConfigurerAdapter {
      * Cors Configuration Only For develop
      * @return
      */
-    @Bean
-    public CorsConfigurationSource corsConfigurationSource() {
-        log.debug("** Cors Configuration **");
-        CorsConfiguration configuration = new CorsConfiguration();
-
-        configuration.addAllowedOrigin("*");
-        configuration.addAllowedMethod("*");
-//        configuration.addAllowedHeader("*");
-//        configuration.setAllowCredentials(true);
-
-        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
-        source.registerCorsConfiguration("/**", configuration);
-        return source;
-    }
+//    @Bean
+//    public CorsConfigurationSource corsConfigurationSource() {
+//        log.debug("** Cors Configuration **");
+//        CorsConfiguration configuration = new CorsConfiguration();
+//
+//        configuration.addAllowedOrigin("*");
+//        configuration.addAllowedMethod("*");
+////        configuration.addAllowedHeader("*");
+////        configuration.setAllowCredentials(true);
+//
+//        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+//        source.registerCorsConfiguration("/**", configuration);
+//        return source;
+//    }
 
     @Bean
     public PasswordEncoder passwordEncoder() {

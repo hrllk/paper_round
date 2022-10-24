@@ -5,8 +5,8 @@ import com.kokn.paperround.component.EmailSender;
 import com.kokn.paperround.component.TokenProvider;
 import com.kokn.paperround.constants.Constants;
 import com.kokn.paperround.dto.SignInDto;
+import com.kokn.paperround.dto.SignInResponseDto;
 import com.kokn.paperround.dto.SignUpDto;
-import com.kokn.paperround.dto.TokenDto;
 import com.kokn.paperround.entity.ConfirmationToken;
 import com.kokn.paperround.entity.User;
 import com.kokn.paperround.repository.ConfirmationTokenRepository;
@@ -78,11 +78,17 @@ public class LoginService implements UserDetailsService {
     }
 
 
-    public TokenDto signin(SignInDto dto){
+    public SignInResponseDto signIn2(SignInDto dto){
         UsernamePasswordAuthenticationToken authenticationToken = UsernamePasswordAuthenticationToken.unauthenticated(dto.getEmail(), dto.getPassword());
+
         Authentication authentication = authenticationManagerBuilder.getObject().authenticate(authenticationToken);
-        log.debug("authentication: [{}]", authentication);
-        return tokenProvider.generateTokenDto(authentication);
+        User user = userRepository.findByEmail(authentication.getName());
+        String accessToken = tokenProvider.generateAccessToken(authentication);
+
+        return SignInResponseDto.builder()
+                .userId(user.getUserId())
+                .token(accessToken)
+                .build();
     }
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {

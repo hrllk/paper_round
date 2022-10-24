@@ -50,29 +50,52 @@ public class TokenProvider {
         return false;
     }
 
-    public TokenDto generateTokenDto(Authentication authentication){
-        log.debug("func: generateTokenDto() !");
-        String authorities = authentication.getAuthorities().stream()
-                .map(GrantedAuthority::getAuthority)
-                .collect(Collectors.joining(","));
-        long now = new Date().getTime();
+//    public TokenDto generateTokenDto(Authentication authentication){
+//    public String generateTokenDto(Authentication authentication){
+//        Date expireDt = new Date(new Date().getTime() + ACCESS_TOKEN_EXPIRE_TIME);
+//        return generateAccessToken(authentication, expireDt);
+////        String accessToken = generateAccessToken(authentication, expireDt);
+////
+////        return TokenDto.builder()
+//////                .grantType(BEARER_TYPE)
+////                .accessToken(accessToken)
+////                .accessTokenExpiresln(expireDt.getTime())
+////                .build();
+//    }
 
-        /**
-         * Generate Token
-         */
-        Date accessTokenExpiresIn = new Date(now + ACCESS_TOKEN_EXPIRE_TIME);
-        String accessToken = Jwts.builder()
+
+
+    public String generateAccessToken(Authentication authentication){
+        Date expireDt = new Date(new Date().getTime() + ACCESS_TOKEN_EXPIRE_TIME);
+
+        String authorities = parseAuthorities(authentication);
+
+        return Jwts.builder()
                 .setSubject(authentication.getName())       // id를지정하고,
                 .claim(AUTHORITIES_KEY, authorities)        // key는 사용자가 가지고있는 권한을 사용하며,
-                .setExpiration(accessTokenExpiresIn)        // 만료시간을 설정하고,
+                .setExpiration(expireDt)                    // 만료시간을 설정하고,
                 .signWith(key, SignatureAlgorithm.HS512)    // 서명(고유)값과, 해시키를 지정하여
                 .compact();                                 // 만든다(토큰을)
 
-        return TokenDto.builder()
-                .grantType(BEARER_TYPE)
-                .accessToken(accessToken)
-                .accessTokenExpiresln(accessTokenExpiresIn.getTime())
-                .build();
+    }
+
+    private String generateAccessToken(Authentication authentication, Date expireDt){
+
+        String authorities = parseAuthorities(authentication);
+
+        return Jwts.builder()
+                .setSubject(authentication.getName())       // id를지정하고,
+                .claim(AUTHORITIES_KEY, authorities)        // key는 사용자가 가지고있는 권한을 사용하며,
+                .setExpiration(expireDt)                    // 만료시간을 설정하고,
+                .signWith(key, SignatureAlgorithm.HS512)    // 서명(고유)값과, 해시키를 지정하여
+                .compact();                                 // 만든다(토큰을)
+
+    }
+
+    private String parseAuthorities(Authentication authentication){
+        return authentication.getAuthorities().stream()
+                .map(GrantedAuthority::getAuthority)
+                .collect(Collectors.joining(","));
     }
 
 

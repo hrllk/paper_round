@@ -60,6 +60,7 @@
                                   large
                                   :disabled="password.length === 0 || email.length === 0"
                                   color="primary"
+                                  @click="signin()"
                               >
                                 Login</v-btn>
                               <v-btn large text class="text-capitalize primary--text">Forget Password</v-btn>
@@ -147,6 +148,10 @@
 <script>
 
 import axios from 'axios';
+import VueCookies from "vue-cookies";
+import router from "../../Routes";
+// import store from "@/store/index";
+
   export default {
     name: 'Login',
     data() {
@@ -182,21 +187,32 @@ import axios from 'axios';
           console.log("signup params: ", this.signupForm);
 
       },
-      signup() {
-        console.log("signup.");
-        console.log("signup params: ", this.signupForm);
-        // this.$axios.post(`/auth/signup`, this.signup, {
-        console.log("signupForm.serialize: ", this.signupForm.serialize)
+      signin() {
+
+        //TODO: password 오류시 Alert 띄우기
         let frm = new FormData;
-        // formData = this.signupForm;
+        frm.append('email', this.email);
+        frm.append('password', this.password);
+        // console.log("frm: ", frm);
+        axios.post(`/auth/signIn`, frm, {
+        }).then(function (res){
+          // console.log('received accessToken after Login: ', res.data.accessToken);
+          VueCookies.set('accessToken', res.data.accessToken);
+          VueCookies.set('userId', res.data.userId);
+          router.push("/");
+
+        }).catch(function (err){
+          console.log("err: ", err);
+        });
+      },
+      signup() {
+        let frm = new FormData;
         frm.append('name', this.signupForm.name);
         frm.append('email', this.signupForm.email);
         frm.append('password', this.signupForm.password);
-        console.log("formData: ", frm);
 
         axios.post(`/auth/signup`,frm, {
         }).then(res => console.log("res: ", res));
-
       }
     }
   }

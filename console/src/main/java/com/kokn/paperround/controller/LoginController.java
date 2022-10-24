@@ -2,6 +2,7 @@ package com.kokn.paperround.controller;
 
 import com.kokn.paperround.auth.LoginService;
 import com.kokn.paperround.dto.SignInDto;
+import com.kokn.paperround.dto.SignInResponseDto;
 import com.kokn.paperround.dto.SignUpDto;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -25,10 +26,10 @@ public class LoginController {
         return ResponseEntity.ok(null);
     }
 
-    @PostMapping("/signin")
-    public ResponseEntity signin(@ModelAttribute SignInDto dto) {
+    @PostMapping("/signIn")
+    public ResponseEntity<?> signIn(@ModelAttribute SignInDto dto) {
 
-        return ResponseEntity.ok(loginService.signin(dto));
-
+        SignInResponseDto response = loginService.signIn2(dto);
+        return ResponseEntity.ok(response);
     }
 }
