@@ -7,7 +7,7 @@ import lombok.Data;
 @Builder
 public class SignInResponseDto {
 
-    private String token;
+    private String accessToken;
 
     private Long userId;
 

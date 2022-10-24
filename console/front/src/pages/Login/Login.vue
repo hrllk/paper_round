@@ -196,13 +196,13 @@ import router from "../../Routes";
         // console.log("frm: ", frm);
         axios.post(`/auth/signIn`, frm, {
         }).then(function (res){
-          // console.log('received accessToken after Login: ', res.data.accessToken);
           VueCookies.set('accessToken', res.data.accessToken);
           VueCookies.set('userId', res.data.userId);
           router.push("/");
 
         }).catch(function (err){
-          console.log("err: ", err);
+          console.log('err: ', err);
+            // alert('Pls Check Account again');
         });
       },
       signup() {

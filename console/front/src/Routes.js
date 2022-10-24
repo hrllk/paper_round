@@ -73,10 +73,10 @@ const router = new VueRouter({
 
 router.beforeEach(async (to, from, next) => {
 
-  console.log("to: ", to);
-  console.log("from: ", from);
-  console.log("next: ", next);
-  console.log('accessToken : ', VueCookies.get('accessToken'))
+  // console.log("to: ", to);
+  // console.log("from: ", from);
+  // console.log("next: ", next);
+  // console.log('accessToken : ', VueCookies.get('accessToken'))
 
   // if (VueCookies.get('accessToken') !== null){
   //   console.log('have accessToken !! ')

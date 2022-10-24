@@ -4,6 +4,7 @@ import Vuex from 'vuex';
 // 데이터를 로컬스토리지에 저장하기위한 용이한 플러그인
 // import createPersistedState from 'vuex-persistedstate';
 import VueCookies from 'vue-cookies'
+import router from '@/Routes'
 
 Vue.use(Vuex);
 
@@ -18,9 +19,12 @@ export default new Vuex.Store({
         toggleDrawer(state) {
             state.drawer = !state.drawer;
         },
+        /***
+         * 모든쿠키제거
+         */
         removeToken () {
             VueCookies.keys().forEach(cookie => VueCookies.remove(cookie));
-            this.$router.push("/login");
+            router.push("/login");
         },
 
     },

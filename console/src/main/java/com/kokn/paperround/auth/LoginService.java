@@ -87,7 +87,7 @@ public class LoginService implements UserDetailsService {
 
         return SignInResponseDto.builder()
                 .userId(user.getUserId())
-                .token(accessToken)
+                .accessToken(accessToken)
                 .build();
     }
     @Override
