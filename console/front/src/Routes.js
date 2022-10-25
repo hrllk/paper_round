@@ -91,7 +91,6 @@ router.beforeEach(async (to, from, next) => {
 
 
   let accessToken = VueCookies.get('accessToken');
-  console.log('accessToken: ', accessToken);
 
   if (to.name !== 'Login' && accessToken === null) next({name: 'Login'})
   else next()

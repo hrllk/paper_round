@@ -28,7 +28,7 @@ public class JwtExceptionFilter extends OncePerRequestFilter {
             filterChain.doFilter(request, response);
         } catch (ExpiredJwtException e){
             response.setContentType("application/json");
-            response.setStatus(440);
+            response.setStatus(401); // expiredToken
         }
 
     }

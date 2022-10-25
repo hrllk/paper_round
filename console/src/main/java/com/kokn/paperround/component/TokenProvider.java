@@ -1,11 +1,9 @@
 package com.kokn.paperround.component;
 
 import com.kokn.paperround.auth.UserPrincipalDetails;
-import com.kokn.paperround.dto.TokenDto;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
-import io.jsonwebtoken.security.SecurityException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -38,48 +36,20 @@ public class TokenProvider {
         this.key = Keys.hmacShaKeyFor(keyBytes);
     }
 
-    public boolean validateToken(String token) throws ExpiredJwtException {
-
-        try {
-            Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(token);
-            log.debug("Valid Token: [{}]", token);
-            return true;
-        } catch (SecurityException | MalformedJwtException | UnsupportedJwtException | IllegalArgumentException e){
-            log.error("Invalid Token Cause: [{}]", e);
-        }
-        return false;
+    public boolean isValidate(String token) throws ExpiredJwtException {
+        Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(token);
+        log.debug("Valid Token: [{}]", token);
+        return true;
     }
 
-//    public TokenDto generateTokenDto(Authentication authentication){
-//    public String generateTokenDto(Authentication authentication){
-//        Date expireDt = new Date(new Date().getTime() + ACCESS_TOKEN_EXPIRE_TIME);
-//        return generateAccessToken(authentication, expireDt);
-////        String accessToken = generateAccessToken(authentication, expireDt);
-////
-////        return TokenDto.builder()
-//////                .grantType(BEARER_TYPE)
-////                .accessToken(accessToken)
-////                .accessTokenExpiresln(expireDt.getTime())
-////                .build();
-//    }
+
+
+
 
 
 
     public String generateAccessToken(Authentication authentication){
         Date expireDt = new Date(new Date().getTime() + ACCESS_TOKEN_EXPIRE_TIME);
-
-        String authorities = parseAuthorities(authentication);
-
-        return Jwts.builder()
-                .setSubject(authentication.getName())       // id를지정하고,
-                .claim(AUTHORITIES_KEY, authorities)        // key는 사용자가 가지고있는 권한을 사용하며,
-                .setExpiration(expireDt)                    // 만료시간을 설정하고,
-                .signWith(key, SignatureAlgorithm.HS512)    // 서명(고유)값과, 해시키를 지정하여
-                .compact();                                 // 만든다(토큰을)
-
-    }
-
-    private String generateAccessToken(Authentication authentication, Date expireDt){
 
         String authorities = parseAuthorities(authentication);
 
@@ -104,10 +74,11 @@ public class TokenProvider {
      */
     public Authentication getAuthentication(String token) {
         Claims claims = parseClaims(token);
+        log.debug("claims.get(AUTHORITIES_KEY): [{}]", claims.get(AUTHORITIES_KEY));
         Collection<? extends GrantedAuthority> authorities = Arrays.stream(claims.get(AUTHORITIES_KEY).toString().split(","))
+
                 .map(SimpleGrantedAuthority::new)
                 .collect(Collectors.toList());
-
 
         UserDetails principal = new UserPrincipalDetails(claims.getSubject(), "", authorities);
         return new UsernamePasswordAuthenticationToken(principal, "", authorities);

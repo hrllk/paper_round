@@ -21,9 +21,7 @@ public class UserPrincipalDetails implements UserDetails {
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        List<GrantedAuthority> authorities = new ArrayList<>();
-
-        return null;
+        return authorities;
     }
 
     @Override

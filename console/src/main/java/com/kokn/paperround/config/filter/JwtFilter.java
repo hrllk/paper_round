@@ -1,6 +1,7 @@
 package com.kokn.paperround.config.filter;
 
 import com.kokn.paperround.component.TokenProvider;
+import io.jsonwebtoken.ExpiredJwtException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
@@ -23,14 +24,14 @@ public class JwtFilter extends OncePerRequestFilter {
     private final TokenProvider tokenProvider;
 
     @Override
-    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
+    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ExpiredJwtException, ServletException, IOException {
         log.debug("***************************************************************");
         log.debug("* CONFIGURATION - Filter Config(JwtFilter)");
 
 
         String token = request.getHeader("Authorization");
         log.debug("Authorization: [{}]", token);
-        if (!StringUtils.isEmpty(token) && tokenProvider.validateToken(token)){
+        if (!StringUtils.isEmpty(token) && tokenProvider.isValidate(token)){
             Authentication authentication = tokenProvider.getAuthentication(token);
             SecurityContextHolder.getContext().setAuthentication(authentication);
         }

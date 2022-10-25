@@ -4,10 +4,9 @@ import com.kokn.paperround.service.KeywordService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
@@ -16,10 +15,14 @@ import org.springframework.web.bind.annotation.RestController;
 public class KeywordController {
 
     private final KeywordService keywordService;
-    @PostMapping("/user/{userId}/keywords")
+    @GetMapping("/user/{userId}/keywords")
     public ResponseEntity getKeywords(@PathVariable("userId") Long userId) {
 
-        keywordService.getKeywordByUserId(userId);
-        return null;
+        List<String> keywords = keywordService.getKeywordListByUserId(userId);
+
+        if (keywords.isEmpty())
+            return ResponseEntity.noContent().build();
+
+        return ResponseEntity.ok(keywords);
     }
 }

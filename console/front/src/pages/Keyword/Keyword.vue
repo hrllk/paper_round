@@ -37,7 +37,7 @@
 </template>
 <script>
 import axios from "axios";
-// import store from "@/store/index";
+import store from "@/store/index";
 import VueCookies from "vue-cookies";
 
 export default {
@@ -60,7 +60,15 @@ export default {
     // console.log('VueCookies.get(\'userId\'): ', VueCookies.get('userId'));
 
     axios.get(`/api/v1/user/${VueCookies.get('userId')}/keywords`, {})
-        .then(res => console.log("res: ", res));
+        .then(res => console.log("res: ", res))
+        .catch(function (err) {
+          console.log('err.response:', err.response);
+          if (err.response.status === 401) {
+            alert('token is expired')
+            store.commit('removeToken')
+          }
+
+    });
 
   },
 

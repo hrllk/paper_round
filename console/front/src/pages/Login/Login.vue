@@ -201,8 +201,10 @@ import router from "../../Routes";
           router.push("/");
 
         }).catch(function (err){
-          console.log('err: ', err);
-            // alert('Pls Check Account again');
+
+          if (err.response.status === 401)
+            alert('Wrong UserAccount Pls Check Again')
+
         });
       },
       signup() {
