@@ -18,7 +18,7 @@ public class UserKeyword implements Serializable {
     private static final long serialVersionUID = 1L;
 
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY) // IDENTITY == 기본키생성을 DB에 위임함.
     private Long userKeywordId;
 
     @Column(unique = true)

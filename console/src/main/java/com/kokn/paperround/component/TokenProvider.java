@@ -1,6 +1,8 @@
 package com.kokn.paperround.component;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.kokn.paperround.auth.UserPrincipalDetails;
+import com.kokn.paperround.entity.User;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
@@ -48,19 +50,22 @@ public class TokenProvider {
 
 
 
-    public String generateAccessToken(Authentication authentication){
+    public String generateAccessToken(Authentication authentication, User user){
         Date expireDt = new Date(new Date().getTime() + ACCESS_TOKEN_EXPIRE_TIME);
 
-        String authorities = parseAuthorities(authentication);
+//        String authorities = parseAuthorities(authentication);
 
         return Jwts.builder()
+
                 .setSubject(authentication.getName())       // id를지정하고,
-                .claim(AUTHORITIES_KEY, authorities)        // key는 사용자가 가지고있는 권한을 사용하며,
+//                .claim(AUTHORITIES_KEY, authorities)        // key는 사용자가 가지고있는 권한을 사용하며,
+                .claim("user", user)        // key는 사용자가 가지고있는 권한을 사용하며,
                 .setExpiration(expireDt)                    // 만료시간을 설정하고,
                 .signWith(key, SignatureAlgorithm.HS512)    // 서명(고유)값과, 해시키를 지정하여
                 .compact();                                 // 만든다(토큰을)
 
     }
+
 
     private String parseAuthorities(Authentication authentication){
         return authentication.getAuthorities().stream()
@@ -74,14 +79,19 @@ public class TokenProvider {
      */
     public Authentication getAuthentication(String token) {
         Claims claims = parseClaims(token);
+        ObjectMapper om = new ObjectMapper();
+        User user = om.convertValue(claims.get("user"), User.class);
+//        User user = claims.get("user", User.class);
+//        ObjectMapper om = new ObjectMapper()
         log.debug("claims.get(AUTHORITIES_KEY): [{}]", claims.get(AUTHORITIES_KEY));
-        Collection<? extends GrantedAuthority> authorities = Arrays.stream(claims.get(AUTHORITIES_KEY).toString().split(","))
+        String authorities = user.getAuthority();
 
+        Collection<? extends GrantedAuthority> authList = Arrays.stream(authorities.split(","))
                 .map(SimpleGrantedAuthority::new)
                 .collect(Collectors.toList());
 
-        UserDetails principal = new UserPrincipalDetails(claims.getSubject(), "", authorities);
-        return new UsernamePasswordAuthenticationToken(principal, "", authorities);
+        UserDetails principal = new UserPrincipalDetails(claims.getSubject(), "", authList);
+        return new UsernamePasswordAuthenticationToken(principal, "", authList);
     }
 
     private Claims parseClaims(String token) {

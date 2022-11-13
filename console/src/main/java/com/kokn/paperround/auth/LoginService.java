@@ -1,6 +1,8 @@
 package com.kokn.paperround.auth;
 
-import com.kokn.paperround.advisor.ConflictException;
+import com.google.common.base.CharMatcher;
+import com.kokn.paperround.advisor.CustomException;
+import com.kokn.paperround.advisor.ErrorCode;
 import com.kokn.paperround.component.EmailSender;
 import com.kokn.paperround.component.TokenProvider;
 import com.kokn.paperround.constants.Constants;
@@ -13,7 +15,9 @@ import com.kokn.paperround.repository.ConfirmationTokenRepository;
 import com.kokn.paperround.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 import org.modelmapper.ModelMapper;
+import org.springframework.http.HttpHeaders;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.core.Authentication;
@@ -48,9 +52,8 @@ public class LoginService implements UserDetailsService {
     public void signup(SignUpDto dto) {
 
 
-        if (isDuplicated(dto.getEmail())){
-            throw new ConflictException("already exist user");
-        }
+        if (isDuplicated(dto.getEmail()))
+            throw new CustomException(ErrorCode.CONFLICT);
 
         ModelMapper modelMapper = new ModelMapper();
         User user = modelMapper.map(dto, User.class);
@@ -79,20 +82,26 @@ public class LoginService implements UserDetailsService {
 
 
     public SignInResponseDto signIn2(SignInDto dto){
+        // 토큰생성 추후에 검증하기위함.
         UsernamePasswordAuthenticationToken authenticationToken = UsernamePasswordAuthenticationToken.unauthenticated(dto.getEmail(), dto.getPassword());
 
+        // 위에서 생성한 토큰을이용해 검증시도,
+        log.debug("try authentication by authenticationToken");
         Authentication authentication = authenticationManagerBuilder.getObject().authenticate(authenticationToken);
-        User user = userRepository.findByEmail(authentication.getName());
-        String accessToken = tokenProvider.generateAccessToken(authentication);
+        String email = authentication.getName();
+        User user = userRepository.findByEmail(email);
+
+        String accessToken = tokenProvider.generateAccessToken(authentication, user);
 
         return SignInResponseDto.builder()
                 .userId(user.getUserId())
                 .accessToken(accessToken)
                 .build();
     }
+
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        System.out.println("\n\n\n!!!!loadUserByUsername!!!!\n\n\n");
+        System.out.println("trying authentication in loadUserByUsername");
         log.debug("username: [{}]", username);
         User user = Optional.ofNullable(userRepository.findByEmail(username)).orElseThrow(() -> new UsernameNotFoundException("User Not Found Email Was Wrong"));
 
@@ -103,5 +112,18 @@ public class LoginService implements UserDetailsService {
     private UserDetails generateUserDetails(User user) {
         GrantedAuthority grantedAuthority = new SimpleGrantedAuthority(user.getAuthority());
         return new UserPrincipalDetails(user.getEmail(), user.getPassword(), Collections.singleton(grantedAuthority));
+    }
+
+    public void verify(HttpHeaders headers, Long userId){
+
+//        String accessToken = String.valueOf(headers.get("Authorization")).replace("[","").replace("]","");
+        String accessToken = CharMatcher.anyOf("[]").removeFrom(String.valueOf(headers.get("Authorization")));
+        Authentication authentication = new TokenProvider().getAuthentication(accessToken);
+        String email = authentication.getName();
+
+        Optional<User> user = userRepository.findById(userId);
+
+        if (!StringUtils.equals(user.get().getEmail(),email))
+            throw new RuntimeException("failed to verify");
     }
 }

@@ -1,12 +1,14 @@
-//package com.kokn.paperround.repository;
-//
-//import com.kokn.paperround.entity.Keyword;
-//import com.kokn.paperround.entity.User;
-//import org.springframework.data.jpa.repository.JpaRepository;
-//import org.springframework.stereotype.Repository;
-//
-//@Repository
-//public interface KeywordRepository extends JpaRepository<Keyword, Long> {
-//
-//    User findByEmail(String email);
-//}
+package com.kokn.paperround.repository;
+
+import com.kokn.paperround.entity.Keyword;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.stereotype.Repository;
+
+import java.util.Optional;
+
+@Repository
+public interface KeywordRepository extends JpaRepository<Keyword, Long> {
+
+    Optional<Keyword> findByKeyword(String keyword);
+
+}
