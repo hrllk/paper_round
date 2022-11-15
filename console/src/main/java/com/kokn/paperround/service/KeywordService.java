@@ -145,8 +145,12 @@ public class KeywordService {
         }
 
         userKeywordRepository.deleteByUserIdAndKeyword(userId, keyword);
+    }
 
 
+
+    public List<Keyword> getKeywordList(){
+        return keywordRepository.findAll();
     }
 
 

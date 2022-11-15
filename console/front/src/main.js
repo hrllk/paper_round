@@ -8,6 +8,7 @@ import * as VueGoogleMaps from 'vue2-google-maps';
 import Toast from "vue-toastification";
 import "vue-toastification/dist/index.css";
 import VueCookies from "vue-cookies"
+import VueWordCloud from 'vue-wordcloud';
 
 Vue.use(Toast);
 Vue.use(VueCookies)
@@ -25,5 +26,6 @@ new Vue({
   router,
   store,
   axios,
+  VueWordCloud,
   render: h => h(App),
 }).$mount('#app')

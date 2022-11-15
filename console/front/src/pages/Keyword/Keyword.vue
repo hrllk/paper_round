@@ -6,6 +6,19 @@
         <h1 class="page-title">Keywords</h1>
 <!--        <h1 class="page-title">키워드</1>-->
       </v-row>
+
+      <v-row>
+        <v-col cols="6" offset="3">
+
+          <wordCloud
+              :data="defaultWords"
+              nameKey="keyword"
+              valueKey="useCnt"
+              :color="myColors"
+              :showTooltip="true">
+<!--              :wordClick="wordClickHandler">-->
+          </wordCloud>        </v-col>
+      </v-row>
       <v-row>
         <v-col cols="6" offset="3">
           <v-text-field
@@ -43,11 +56,13 @@ import axios from "axios";
 import store from "@/store/index";
 import VueCookies from "vue-cookies";
 import ConfirmDialog from "@/components/Dialog/ConfirmDialog";
+import wordCloud from "vue-wordcloud";
 
 export default {
 
   components: {
-    ConfirmDialog
+    ConfirmDialog,
+    wordCloud
   },
   data () {
     return {
@@ -59,10 +74,22 @@ export default {
         // v => /.+@.+/.test(v) || 'E-mail must be valid',
       // ],
 
+      myColors: ['#1f77b4', '#629fc9', '#94bedb', '#c9e0ef'],
+      defaultWords: [],
     }
   },
-  created() {
+  // render first at load dom
+  async created() {
 
+    const config = {
+      url: `/api/v1/keywords`,
+      method: 'GET'
+    }
+    let response = await axios(config);
+    this.defaultWords = response.data;
+    console.log("data : ",response.data);
+
+    console.log("userId: ", VueCookies.get('userId'))
     axios.get(`/api/v1/users/${VueCookies.get('userId')}/keywords`, {})
         .then(res => this.keywordList = res.data)
         .catch(function (err) {
@@ -71,14 +98,11 @@ export default {
             alert('token is expired')
             store.commit('removeToken')
           }
-
     });
 
   },
 
   methods: {
-
-
     acceptRemove(keyword){
 
       console.log('삭제요청받은 키워드: ', keyword);

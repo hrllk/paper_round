@@ -1,12 +1,15 @@
 package com.kokn.paperround.component;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.kokn.paperround.advisor.CustomException;
+import com.kokn.paperround.advisor.ErrorCode;
 import com.kokn.paperround.auth.UserPrincipalDetails;
 import com.kokn.paperround.entity.User;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
@@ -19,6 +22,8 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Date;
 import java.util.stream.Collectors;
+
+import static com.kokn.paperround.advisor.ErrorCode.UNAUTHORIZED_TOKEN;
 
 @Component
 @Slf4j
@@ -78,11 +83,12 @@ public class TokenProvider {
      * Check Authentication & Authority
      */
     public Authentication getAuthentication(String token) {
+
+        verify(token);
+
         Claims claims = parseClaims(token);
         ObjectMapper om = new ObjectMapper();
         User user = om.convertValue(claims.get("user"), User.class);
-//        User user = claims.get("user", User.class);
-//        ObjectMapper om = new ObjectMapper()
         log.debug("claims.get(AUTHORITIES_KEY): [{}]", claims.get(AUTHORITIES_KEY));
         String authorities = user.getAuthority();
 
@@ -92,6 +98,11 @@ public class TokenProvider {
 
         UserDetails principal = new UserPrincipalDetails(claims.getSubject(), "", authList);
         return new UsernamePasswordAuthenticationToken(principal, "", authList);
+    }
+
+    private void verify(String token){
+        if(StringUtils.isEmpty(token))
+            throw new CustomException(UNAUTHORIZED_TOKEN);
     }
 
     private Claims parseClaims(String token) {

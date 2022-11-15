@@ -20,6 +20,7 @@
     "vue-cookies": "^1.8.1",
     "vue-router": "^3.5.1",
     "vue-toastification": "^1.7.11",
+    "vue-wordcloud": "^1.1.1",
     "vue2-google-maps": "^0.10.7",
     "vue2-perfect-scrollbar": "^1.5.0",
     "vuetify": "^2.4.9",

@@ -18,6 +18,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.modelmapper.ModelMapper;
 import org.springframework.http.HttpHeaders;
+import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.core.Authentication;
@@ -32,6 +33,8 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Collections;
 import java.util.Optional;
+
+import static com.kokn.paperround.advisor.ErrorCode.BAD_REQUEST;
 
 @Service
 @RequiredArgsConstructor
@@ -83,11 +86,13 @@ public class LoginService implements UserDetailsService {
 
     public SignInResponseDto signIn2(SignInDto dto){
         // 토큰생성 추후에 검증하기위함.
-        UsernamePasswordAuthenticationToken authenticationToken = UsernamePasswordAuthenticationToken.unauthenticated(dto.getEmail(), dto.getPassword());
+        UsernamePasswordAuthenticationToken unAuthenticatedToken = UsernamePasswordAuthenticationToken.unauthenticated(dto.getEmail(), dto.getPassword());
 
         // 위에서 생성한 토큰을이용해 검증시도,
         log.debug("try authentication by authenticationToken");
-        Authentication authentication = authenticationManagerBuilder.getObject().authenticate(authenticationToken);
+        AuthenticationManager manager = authenticationManagerBuilder.getObject();
+        Authentication authentication = manager.authenticate(unAuthenticatedToken);
+
         String email = authentication.getName();
         User user = userRepository.findByEmail(email);
 
@@ -102,10 +107,8 @@ public class LoginService implements UserDetailsService {
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         System.out.println("trying authentication in loadUserByUsername");
-        log.debug("username: [{}]", username);
         User user = Optional.ofNullable(userRepository.findByEmail(username)).orElseThrow(() -> new UsernameNotFoundException("User Not Found Email Was Wrong"));
 
-        log.debug("user: [{}]", user);
         return generateUserDetails(user);
     }
 
@@ -116,14 +119,13 @@ public class LoginService implements UserDetailsService {
 
     public void verify(HttpHeaders headers, Long userId){
 
-//        String accessToken = String.valueOf(headers.get("Authorization")).replace("[","").replace("]","");
         String accessToken = CharMatcher.anyOf("[]").removeFrom(String.valueOf(headers.get("Authorization")));
-        Authentication authentication = new TokenProvider().getAuthentication(accessToken);
+        Authentication authentication = tokenProvider.getAuthentication(accessToken);
         String email = authentication.getName();
 
         Optional<User> user = userRepository.findById(userId);
 
         if (!StringUtils.equals(user.get().getEmail(),email))
-            throw new RuntimeException("failed to verify");
+            throw new CustomException(BAD_REQUEST);
     }
 }
