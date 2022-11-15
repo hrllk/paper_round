@@ -21,12 +21,12 @@ import java.io.IOException;
 @Slf4j
 public class JwtFilter extends OncePerRequestFilter {
 
-    private final TokenProvider tokenProvider;
-
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ExpiredJwtException, ServletException, IOException {
         log.debug("***************************************************************");
         log.debug("* CONFIGURATION - Filter Config(JwtFilter)");
+
+        TokenProvider tokenProvider = new TokenProvider();
 
 
         String token = request.getHeader("Authorization");
