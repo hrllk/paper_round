@@ -1,6 +1,6 @@
 package com.kokn.paperround.auth;
 
-import com.kokn.paperround.dto.SignUpDto;
+import com.kokn.paperround.dto.SignUpRequest;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -32,7 +32,7 @@ class LoginServiceTest {
     void signup_test() {
 
         log.debug("hi");
-        SignUpDto dto = new SignUpDto();
+        SignUpRequest dto = new SignUpRequest();
         dto.setEmail("roovcloudy@gmail.com");
         dto.setPassword("tmfvmsdkdl1!");
         loginService.signup(dto);

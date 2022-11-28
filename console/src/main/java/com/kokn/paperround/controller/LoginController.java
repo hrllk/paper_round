@@ -1,16 +1,13 @@
 package com.kokn.paperround.controller;
 
 import com.kokn.paperround.auth.LoginService;
-import com.kokn.paperround.dto.SignInDto;
+import com.kokn.paperround.dto.SignInRequest;
 import com.kokn.paperround.dto.SignInResponseDto;
-import com.kokn.paperround.dto.SignUpDto;
+import com.kokn.paperround.dto.SignUpRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequiredArgsConstructor
@@ -21,14 +18,15 @@ public class LoginController {
     private final LoginService loginService;
 
     @PostMapping("/signup")
-    public ResponseEntity signup(@ModelAttribute SignUpDto dto) {
-        loginService.signup(dto);
+    public ResponseEntity signup(@RequestBody SignUpRequest signUpRequest) {
+        loginService.signup(signUpRequest);
         return ResponseEntity.ok(null);
     }
 
     @PostMapping("/signIn")
-    public ResponseEntity<?> signIn(@ModelAttribute SignInDto dto) {
-        SignInResponseDto response = loginService.signIn2(dto);
+//    public ResponseEntity<?> signIn(@ModelAttribute SignInDto dto) {
+    public ResponseEntity<?> signIn(@RequestBody SignInRequest signInRequest) {
+        SignInResponseDto response = loginService.signIn2(signInRequest);
         return ResponseEntity.ok(response);
     }
 }

@@ -2,6 +2,7 @@ package com.kokn.paperround.entity;
 
 import lombok.Getter;
 import lombok.Setter;
+import org.hibernate.annotations.DynamicInsert;
 
 import javax.persistence.*;
 import java.io.Serializable;
@@ -10,6 +11,7 @@ import java.io.Serializable;
 @Table(name="user")
 @Setter
 @Getter
+@DynamicInsert // dynamic insert + default value
 public class User implements Serializable {
 
     private static final long serialVersionUID = 1L;
@@ -30,7 +32,7 @@ public class User implements Serializable {
     @Column
     private byte isConfirm;
 
-    @Column
+    @Column(columnDefinition = "varchar(256) default 'ROLE_USER'")
     private String authority;
 
 }

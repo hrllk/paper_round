@@ -1,6 +1,5 @@
 package com.kokn.paperround.component;
 
-import com.kokn.paperround.model.Mail;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -12,7 +11,6 @@ import org.thymeleaf.spring5.SpringTemplateEngine;
 
 import javax.mail.MessagingException;
 import javax.mail.internet.MimeMessage;
-import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 
 @Component
@@ -29,22 +27,6 @@ public class EmailSender {
     private final SpringTemplateEngine templateEngine;
 
 
-    public void sendEmail(Mail mail) throws MessagingException, IOException{
-
-        MimeMessage message = emailSender.createMimeMessage() ;
-        MimeMessageHelper helper = new MimeMessageHelper(message, MimeMessageHelper.MULTIPART_MODE_MIXED_RELATED, StandardCharsets.UTF_8.name());
-
-        helper.addAttachment(mail.getFile().getName(), mail.getFile());
-        Context context = new Context();
-//        context.setVariables();
-
-        String html = templateEngine.process("helloworld", context);
-
-        helper.setFrom(mail.getFrom());
-        helper.setTo(mail.getTo());
-        helper.setSubject(mail.getSubject());
-        helper.setText(html, true);
-    }
 
 
     /***

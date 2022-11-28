@@ -60,7 +60,7 @@
                                   large
                                   :disabled="password.length === 0 || email.length === 0"
                                   color="primary"
-                                  @click="signin()"
+                                  @click="signIn()"
                               >
                                 Login</v-btn>
                               <v-btn large text class="text-capitalize primary--text">Forget Password</v-btn>
@@ -187,35 +187,75 @@ import router from "../../Routes";
           console.log("signup params: ", this.signupForm);
 
       },
-      signin() {
+      async signIn() {
 
         //TODO: password 오류시 Alert 띄우기
-        let frm = new FormData;
-        frm.append('email', this.email);
-        frm.append('password', this.password);
+        // let frm = new FormData;
+        // frm.append('email', this.email);
+        // frm.append('password', this.password);
         // console.log("frm: ", frm);
-        axios.post(`/auth/signIn`, frm, {
-        }).then(function (res){
-          VueCookies.set('accessToken', res.data.accessToken);
-          VueCookies.set('userId', res.data.userId);
+        const config = {
+          url: `/auth/signIn`,
+          method: 'POST',
+
+          data: {
+            email: this.email,
+            password: this.password,
+          }
+        }
+        let response;
+        try {
+          response = await axios(config);
+          VueCookies.set('accessToken', response.data.accessToken);
+          VueCookies.set('userId', response.data.userId);
           router.push("/");
-
-        }).catch(function (err){
-
-          if (err.response.status === 401)
-            alert('Wrong UserAccount Pls Check Again')
-
-        });
+        } catch (err) {
+          // console.log("err: ", err);
+          let status = err.response.status;
+          // let status = err.status;
+          // console.log('err.status: ', err.status)
+          switch (status) {
+            case 403 : alert("please confirm account"); break;
+            case 404 : alert("please check id, password"); break;
+          }
+        }
       },
-      signup() {
-        let frm = new FormData;
-        frm.append('name', this.signupForm.name);
-        frm.append('email', this.signupForm.email);
-        frm.append('password', this.signupForm.password);
+      async signup() {
+        // let frm = new FormData;
+        // frm.append('name', this.signupForm.name);
+        // frm.append('email', this.signupForm.email);
+        // frm.append('password', this.signupForm.password);
+        // frm.append('authority', 'ROLE_USER');
+        let signupForm = this.signupForm;
 
-        axios.post(`/auth/signup`,frm, {
-        }).then(res => console.log("res: ", res));
+        let config = {
+          url: `/auth/signup`,
+          method: 'POST',
+          data: {
+            email: signupForm.email ,
+            name: signupForm.name,
+            password: signupForm.password,
+            // email: signupForm.email ,
+            // password: this.password,
+          }
+        }
+        let response = await axios(config);
+        if (response.status === 200) {
+          console.log('res: ', response);
+          alert('please confirm account');
+          router.go('/');
+        }
       }
+
+
+      //   axios.post(`/auth/signup`,frm, {
+      //   }).then(res =>
+      //       // if c(res.status === 200)
+      //
+      //   console.log("res: ", res),
+      //         alert("please confirm account")),
+      //       router.go("/")
+      // }
     }
   }
 

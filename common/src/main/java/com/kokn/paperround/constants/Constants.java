@@ -1,15 +1,20 @@
 package com.kokn.paperround.constants;
 
-import org.apache.commons.lang3.StringUtils;
-
 public class Constants {
 
-    public final static String SIGNUP_CONFIRM_URL;
-    private final static String SIGNUP_CONFIRM_URL_DEBUG = "https://dev-paperrouter.com";
-    private final static String SIGNUP_CONFIRM_URL_PROD = "https://paperrouter.com";
+    public final static String HOST_URL;
+    private final static String HOST_URL_LOCAL = "http://localhost:8100";
+    private final static String HOST_URL_DEV = "https://dev-paperrouter.com";
+    private final static String HOST_URL_PROD = "https://paperrouter.com";
 
     static {
-        SIGNUP_CONFIRM_URL = StringUtils.equalsIgnoreCase(System.getProperty("ENC_MODE"), "PROD") ? SIGNUP_CONFIRM_URL_PROD : SIGNUP_CONFIRM_URL_DEBUG;
+        if (System.getProperty("ENC_MODE") == null)
+            System.setProperty("ENC_MODE", "DEV");
+        switch (System.getProperty("ENC_MODE")) {
+            case "PROD": HOST_URL = HOST_URL_PROD; break;
+            case "LOCAL": HOST_URL = HOST_URL_LOCAL; break;
+            default: HOST_URL = HOST_URL_DEV; break;
+        }
     }
 
 }
