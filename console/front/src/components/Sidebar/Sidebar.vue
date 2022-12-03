@@ -108,7 +108,8 @@ export default {
     return {
       items: [
         { title: 'Home', icon: 'mdi-home', link: '/' },
-        { title: 'Keywords', icon: 'mdi-format-size', link: '/keywords' },
+        { title: 'Keyword', icon: 'mdi-format-size', link: '/keywords' },
+        { title: 'Agency', icon: 'mdi-format-size', link: '/agencies' },
         // { title: 'Tables', icon: 'mdi-grid-large', link: '/tables' },
         // { title: 'Notifications', icon: 'mdi-bell-outline', link: '/notifications' },
         // {
